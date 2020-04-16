@@ -37,6 +37,7 @@ class Tracker(object):
             state.get("followup_action"),
             state.get("active_form", {}),
             state.get("latest_action_name"),
+            state.get("page_id")
         )
 
     def __init__(
@@ -49,6 +50,7 @@ class Tracker(object):
         followup_action,
         active_form,
         latest_action_name,
+        page_id
     ):
         """Initialize the tracker."""
 
@@ -56,6 +58,8 @@ class Tracker(object):
         self.events = events
         # id of the source of the messages
         self.sender_id = sender_id
+        # id of the page
+        self.page_id = page_id
         # slots that can be filled in this domain
         self.slots = slots
 
@@ -82,6 +86,7 @@ class Tracker(object):
 
         return {
             "sender_id": self.sender_id,
+            "page_id": self.page_id,
             "slots": self.slots,
             "latest_message": self.latest_message,
             "latest_event_time": latest_event_time,
@@ -160,6 +165,7 @@ class Tracker(object):
     def copy(self):
         return Tracker(
             self.sender_id,
+            self.page_id,
             copy.deepcopy(self.slots),
             copy.deepcopy(self.latest_message),
             copy.deepcopy(self.events),

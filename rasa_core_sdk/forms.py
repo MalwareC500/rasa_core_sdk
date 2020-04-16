@@ -11,7 +11,7 @@ from typing import Dict, Text, Any, List, Union, Optional, Tuple
 from rasa_core_sdk import Action, ActionExecutionRejection
 from rasa_core_sdk.events import SlotSet, Form
 
-
+# import re for entity extraction
 import re
 
 logger = logging.getLogger(__name__)
