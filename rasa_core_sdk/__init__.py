@@ -165,7 +165,6 @@ class Tracker(object):
     def copy(self):
         return Tracker(
             self.sender_id,
-            self.page_id,
             copy.deepcopy(self.slots),
             copy.deepcopy(self.latest_message),
             copy.deepcopy(self.events),
@@ -173,6 +172,7 @@ class Tracker(object):
             self.followup_action,
             self.active_form,
             self.latest_action_name,
+            self.page_id
         )
 
 
