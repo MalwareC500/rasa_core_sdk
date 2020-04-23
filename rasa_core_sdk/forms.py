@@ -300,7 +300,7 @@ class FormAction(Action):
         """Extract the value of requested slot from a user input
             else return None
         """
-        print(tracker.latest_message)
+        logger.info(tracker.latest_message)
         slot_to_fill = tracker.get_slot(REQUESTED_SLOT)
         logger.debug(
             "Trying to extract requested slot '{}' ...".format(slot_to_fill))
@@ -325,7 +325,7 @@ class FormAction(Action):
                     continue
                 elif mapping_type == "from_text":
                     message = tracker.latest_message.get("text")
-                    regex = r"(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?"
+                    regex = r"(?:http[s]?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+"
                     if re.match(regex, message) == None:
                         value = tracker.latest_message.get("text")
                     else:
@@ -422,9 +422,10 @@ class FormAction(Action):
         """Request the next slot and utter template if needed,
             else return None"""
 
+
         for slot in self.required_slots(tracker):
             if self._should_request_slot(tracker, slot):
-                logger.debug("Request next slot '{}'".format(slot))
+                logger.info("Request next slot '{}'".format(slot))
                 if tracker.get_slot("account_" + slot) == None:
                     dispatcher.utter_template(
                         "utter_ask_{}".format(slot),
@@ -442,6 +443,7 @@ class FormAction(Action):
                         silent_fail = False,
                         **tracker.slots
                     )
+                logger.info("request " + slot)
                 return [SlotSet(REQUESTED_SLOT, slot)]
 
         # no more required slots to fill
@@ -593,7 +595,6 @@ class FormAction(Action):
                     temp_tracker.slots[e["name"]] = e["value"]
 
             next_slot_events = self.request_next_slot(dispatcher, temp_tracker, domain)
-
             if next_slot_events is not None:
                 # request next slot
                 events.extend(next_slot_events)
@@ -604,7 +605,6 @@ class FormAction(Action):
                 events.extend(self.submit(dispatcher, temp_tracker, domain))
                 # deactivate the form after submission
                 events.extend(self.deactivate())
-
         return events
 
     def __str__(self):

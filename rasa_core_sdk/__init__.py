@@ -50,7 +50,7 @@ class Tracker(object):
         followup_action,
         active_form,
         latest_action_name,
-        page_id
+        page_id=None
     ):
         """Initialize the tracker."""
 
@@ -86,7 +86,6 @@ class Tracker(object):
 
         return {
             "sender_id": self.sender_id,
-            "page_id": self.page_id,
             "slots": self.slots,
             "latest_message": self.latest_message,
             "latest_event_time": latest_event_time,
@@ -95,6 +94,7 @@ class Tracker(object):
             "latest_input_channel": self.get_latest_input_channel(),
             "active_form": self.active_form,
             "latest_action_name": self.latest_action_name,
+            "page_id": self.page_id
         }
 
     def current_slot_values(self):
@@ -172,7 +172,7 @@ class Tracker(object):
             self.followup_action,
             self.active_form,
             self.latest_action_name,
-            self.page_id
+            page_id=self.page_id
         )
 
 
