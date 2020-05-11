@@ -37,7 +37,8 @@ class Tracker(object):
             state.get("followup_action"),
             state.get("active_form", {}),
             state.get("latest_action_name"),
-            state.get("page_id")
+            state.get("page_id"),
+            state.get("allow_steps")
         )
 
     def __init__(
@@ -50,7 +51,8 @@ class Tracker(object):
         followup_action,
         active_form,
         latest_action_name,
-        page_id=None
+        page_id=None,
+        allow_steps=2
     ):
         """Initialize the tracker."""
 
@@ -74,6 +76,7 @@ class Tracker(object):
         self.latest_message = latest_message if latest_message else {}
         self.active_form = active_form
         self.latest_action_name = latest_action_name
+        self.allow_steps = allow_steps
 
     def current_state(self):
         # type: () -> Dict[Text, Any]
@@ -94,7 +97,8 @@ class Tracker(object):
             "latest_input_channel": self.get_latest_input_channel(),
             "active_form": self.active_form,
             "latest_action_name": self.latest_action_name,
-            "page_id": self.page_id
+            "page_id": self.page_id,
+            "allow_steps": self.allow_steps
         }
 
     def current_slot_values(self):
@@ -172,7 +176,8 @@ class Tracker(object):
             self.followup_action,
             self.active_form,
             self.latest_action_name,
-            page_id=self.page_id
+            page_id=self.page_id,
+            allow_steps=self.allow_steps
         )
 
 

@@ -176,13 +176,14 @@ class ActionExecutor(object):
                 raise Exception(
                     "No registered Action found for name '{}'.".format(action_name)
                 )
-
             tracker_json = action_call.get("tracker")
+            logger.warning(tracker_json)
             domain = action_call.get("domain", {})
             tracker = Tracker.from_dict(tracker_json)
             dispatcher = CollectingDispatcher()
 
             events = action(dispatcher, tracker, domain)
+            print("events:", events)
             logger.debug("Successfully ran '{}'".format(action_name))
             return self._create_api_response(events, dispatcher.messages)
         else:
