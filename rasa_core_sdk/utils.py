@@ -74,3 +74,34 @@ def arguments_of(func):
     except AttributeError:
         # python 2.x is used
         return inspect.getargspec(func).args
+
+def get_job(keyword):
+    jobs = [
+        "Junior Digital Marketing",
+        "Senior B2B Consulting Sales",
+        "B2B Consulting Sales",
+        "Senior Digital Marketing",
+        "Brand Manager",
+        "Senior Digital Marketing",
+        "Security System",
+        "Software Tester",
+        "Full Stack Developer",
+        "FUTURE PRODUCT DIRECTOR",
+        "Business Development",
+        "Junior PHP Developer",
+        "Senior PHP Developer",
+        "Content Writer",
+        "B2B Consulting Sales Manager",
+        "Partnership Engagement",
+        "Customer Onboarding Specialist",
+        "Recruitment Intern",
+        "Nhân viên hành chính kế toán",
+        "React native mobile lead", 
+        "Trưởng nhóm kinh doanh",
+        "B2B Consulting Sales",
+        "Content Freelancer",
+    ]
+    res = [x for x in jobs if keyword.lower() in x.lower()]
+    if len(res) > 0:
+        res.append("Khác")
+    return res

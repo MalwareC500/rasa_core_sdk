@@ -10,6 +10,7 @@ from typing import Dict, Text, Any, List, Union, Optional, Tuple
 
 from rasa_core_sdk import Action, ActionExecutionRejection
 from rasa_core_sdk.events import SlotSet, Form
+from rasa_core_sdk.utils import get_job
 
 # import re for entity extraction
 import re
@@ -422,10 +423,35 @@ class FormAction(Action):
         """Request the next slot and utter template if needed,
             else return None"""
 
+        additional_action = None
 
         for slot in self.required_slots(tracker):
             if self._should_request_slot(tracker, slot):
                 logger.info("Request next slot '{}'".format(slot))
+                if slot == "job_position":
+                    jobs = get_job(tracker.get_slot("position"))
+                    logger.warning(jobs)
+                    if len(jobs) == 0:
+                        additional_action = SlotSet("job_position", tracker.get_slot("position"))
+                        logger.warning("cannot found job from api")
+                        continue
+                    else:
+                        if len(jobs) > 3:
+                            message = ""
+                            for i, job in enumerate(jobs):
+                                message = "\n".join([message, ". ".join([str(i + 1), job])])
+                            message = "\n\n".join(["Bạn vui lòng chọn vị trí mà mình muốn ứng tuyển nhé!", message])
+                            dispatcher.utter_message(message)
+                        else:
+                            buttons = []
+                            for i, job in enumerate(jobs):
+                                buttons.append({"title": ". ".join([str(i + 1), job]), "payload": ". ".join([str(i + 1), job])})
+                            message = "Bạn vui lòng chọn vị trí mà mình muốn ứng tuyển nhé!"
+                            dispatcher.utter_button_message(message, buttons)
+
+                        logger.info("request " + slot)
+                        return [SlotSet(REQUESTED_SLOT, slot), SlotSet("all_jobs", jobs)]
+
                 if tracker.get_slot("account_" + slot) == None:
                     dispatcher.utter_template(
                         "utter_ask_{}".format(slot),
@@ -443,8 +469,11 @@ class FormAction(Action):
                         silent_fail = False,
                         **tracker.slots
                     )
-                logger.info("request " + slot)
-                return [SlotSet(REQUESTED_SLOT, slot)]
+                logger.warning("request " + slot)
+                if additional_action is None:
+                    return [SlotSet(REQUESTED_SLOT, slot)]
+                else:
+                    return [SlotSet(REQUESTED_SLOT, slot)] + [additional_action]
 
         # no more required slots to fill
         return None
